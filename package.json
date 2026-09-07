@@ -1,0 +1,37 @@
+{
+  "name": "aliciaos-ledger",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'lib/**/*.test.ts' 'db/**/*.test.ts'",
+    "db:migrate": "node --env-file=.env.local db/migrate.ts",
+    "db:import": "node --env-file=.env.local db/import-csv.ts",
+    "db:sync": "node --env-file=.env.local db/sync.ts"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^7.9.1",
+    "@neondatabase/serverless": "^1.1.0",
+    "@paper-design/shaders": "^0.0.80",
+    "next": "16.3.4",
+    "plaid": "^47.0.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-plaid-link": "^5.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.4",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "type": "module"
+}

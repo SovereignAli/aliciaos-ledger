@@ -1,0 +1,1374 @@
+@import "tailwindcss";
+
+/*
+ * AlexOS tokens, lifted from alexwil.com/site/styles.css.
+ * Light = the site's "Alex mode" (warm paper). Dark = the site's dark mode.
+ */
+:root {
+  color-scheme: light dark;
+  --hue: 28;
+  --accent: #8b6848;
+  --accent-strong: #6b4e33;
+  --accent-soft: rgba(139, 104, 72, 0.14);
+  --accent-wash: #e8d8c2;
+  --desktop-bg: #e8e0d4;
+  --canvas-bg: #f7f1e8;
+  --canvas-dot: #d8cfc0;
+  --canvas-border: rgba(42, 33, 24, 0.12);
+  --shell-bg: #e7dccb;
+  --sidebar-bg: rgba(233, 222, 203, 0.86);
+  --sidebar-border: rgba(42, 33, 24, 0.08);
+  --sidebar-active: rgba(42, 33, 24, 0.06);
+  --window-bg: #fbf6ee;
+  --window-shadow: 0 0 0 0.5px rgba(42, 33, 24, 0.07), 0 1px 1px rgba(42, 33, 24, 0.04), 0 4px 12px -2px rgba(42, 33, 24, 0.06), 0 12px 28px -6px rgba(42, 33, 24, 0.07);
+  --window-shadow-active: 0 0 0 0.5px rgba(42, 33, 24, 0.1), 0 2px 3px rgba(42, 33, 24, 0.06), 0 8px 20px -4px rgba(42, 33, 24, 0.08), 0 24px 48px -12px rgba(42, 33, 24, 0.1);
+  --title-text: #6b5e50;
+  --tl-inactive: #c8bdb0;
+  --text-1: #2a2118;
+  --text-2: #5c4f42;
+  --text-3: #7a6b5a;
+  --line: rgba(42, 33, 24, 0.1);
+  --line-soft: rgba(42, 33, 24, 0.06);
+  --file-hover: rgba(42, 33, 24, 0.045);
+  --terminal-bg: rgba(36, 28, 20, 0.92);
+  --terminal-border: rgba(240, 220, 196, 0.14);
+  --terminal-text: #f0e6d8;
+  --terminal-dim: #9a8b78;
+  --terminal-accent: #d4a574;
+  --positive: #4a8a3f;
+  --warn: #b4541c;
+  --crit: #a32450;
+  --win-radius: 28px;
+  --canvas-radius: 20px;
+  --canvas-gutter: 10px;
+  --ease-entry: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-base: 200ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #b79f84;
+    --accent-strong: #d8c3a9;
+    --accent-soft: rgba(183, 159, 132, 0.14);
+    --accent-wash: #342d26;
+    --desktop-bg: #0b0c0a;
+    --canvas-bg: #0e0e0e;
+    --canvas-dot: #262626;
+    --canvas-border: rgba(255, 255, 255, 0.07);
+    --shell-bg: #1a1a19;
+    --sidebar-bg: rgba(28, 28, 27, 0.8);
+    --sidebar-border: rgba(255, 255, 255, 0.05);
+    --sidebar-active: rgba(255, 255, 255, 0.06);
+    --window-bg: #181818;
+    --window-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 20px -4px rgba(0, 0, 0, 0.35), 0 20px 40px -8px rgba(0, 0, 0, 0.3);
+    --window-shadow-active: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 2px 4px rgba(0, 0, 0, 0.4), 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 32px 56px -12px rgba(0, 0, 0, 0.4);
+    --title-text: #9e9e9e;
+    --tl-inactive: #565658;
+    --text-1: #e8e8e8;
+    --text-2: #aaaaaa;
+    --text-3: #8a8a8a;
+    --line: rgba(255, 255, 255, 0.09);
+    --line-soft: rgba(255, 255, 255, 0.06);
+    --file-hover: rgba(255, 255, 255, 0.04);
+    --terminal-bg: rgba(8, 9, 8, 0.8);
+    --terminal-border: rgba(255, 255, 255, 0.1);
+    --terminal-text: #e5e5e5;
+    --terminal-dim: #808080;
+    --terminal-accent: #c9ab86;
+    --positive: #7cc26a;
+    --warn: #ce6a33;
+    --crit: #d9557e;
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #b79f84;
+  --accent-strong: #d8c3a9;
+  --accent-soft: rgba(183, 159, 132, 0.14);
+  --accent-wash: #342d26;
+  --desktop-bg: #0b0c0a;
+  --canvas-bg: #0e0e0e;
+  --canvas-dot: #262626;
+  --canvas-border: rgba(255, 255, 255, 0.07);
+  --shell-bg: #1a1a19;
+  --sidebar-bg: rgba(28, 28, 27, 0.8);
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(255, 255, 255, 0.06);
+  --window-bg: #181818;
+  --window-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 20px -4px rgba(0, 0, 0, 0.35), 0 20px 40px -8px rgba(0, 0, 0, 0.3);
+  --window-shadow-active: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 2px 4px rgba(0, 0, 0, 0.4), 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 32px 56px -12px rgba(0, 0, 0, 0.4);
+  --title-text: #9e9e9e;
+  --tl-inactive: #565658;
+  --text-1: #e8e8e8;
+  --text-2: #aaaaaa;
+  --text-3: #8a8a8a;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-soft: rgba(255, 255, 255, 0.06);
+  --file-hover: rgba(255, 255, 255, 0.04);
+  --terminal-bg: rgba(8, 9, 8, 0.8);
+  --terminal-border: rgba(255, 255, 255, 0.1);
+  --terminal-text: #e5e5e5;
+  --terminal-dim: #808080;
+  --terminal-accent: #c9ab86;
+  --positive: #8fae76;
+  --warn: #ce6a33;
+  --crit: #d9557e;
+}
+
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-wash: var(--accent-wash);
+  --color-desktop: var(--desktop-bg);
+  --color-canvas: var(--canvas-bg);
+  --color-shell: var(--shell-bg);
+  --color-window: var(--window-bg);
+  --color-ink: var(--text-1);
+  --color-ink2: var(--text-2);
+  --color-ink3: var(--text-3);
+  --color-title: var(--title-text);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-positive: var(--positive);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
+  --color-terminal: var(--terminal-bg);
+  --color-terminal-text: var(--terminal-text);
+  --color-terminal-dim: var(--terminal-dim);
+  --color-terminal-accent: var(--terminal-accent);
+  --font-sans: var(--font-zalando), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-zalando-expanded), var(--font-zalando), system-ui, sans-serif;
+  --font-semi: var(--font-zalando-semi), var(--font-zalando), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius-win: var(--win-radius);
+  --radius-canvas: var(--canvas-radius);
+  --radius-full: 9999px;
+}
+
+/* Backwards-compatible aliases used by earlier components. */
+@theme inline {
+  --color-ground: var(--desktop-bg);
+  --color-card: var(--window-bg);
+  --color-sunk: var(--sidebar-active);
+  --color-income: var(--positive);
+  --color-accent-ink: #ffffff;
+}
+
+html {
+  background: var(--desktop-bg);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  background: var(--desktop-bg);
+  color: var(--text-1);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+::selection {
+  background: var(--accent-soft);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+.mono {
+  font-family: var(--font-mono);
+}
+.eyebrow {
+  font-family: var(--font-semi);
+  font-size: 11px;
+  font-weight: 520;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+}
+
+/* A window: the site's card. */
+.window {
+  background: var(--window-bg);
+  border-radius: var(--win-radius);
+  corner-shape: superellipse(1.7);
+  box-shadow: var(--window-shadow);
+  overflow: hidden;
+  transition: box-shadow var(--dur-base) var(--ease-entry);
+}
+.window:hover {
+  box-shadow: var(--window-shadow-active);
+}
+.window-sm {
+  border-radius: var(--win-radius);
+}
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 22px;
+  user-select: none;
+}
+.titlebar .label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--title-text);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.titlebar .right {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* The dotted canvas the windows float on. */
+.canvas {
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border-radius: var(--canvas-radius);
+}
+
+/* Terminal window. */
+.terminal {
+  display: flex;
+  flex-direction: column;
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
+  border-radius: var(--win-radius);
+  color: var(--terminal-text);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.75;
+}
+
+@layer components {
+.field {
+  width: 100%;
+  background: var(--window-bg);
+  color: var(--text-1);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.field:focus-visible {
+  outline-offset: 0;
+  border-color: var(--accent);
+}
+select.field {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-3) 50%), linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--dur-base) var(--ease-entry);
+}
+.btn:hover {
+  background: var(--accent-strong);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.btn-quiet {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--line);
+}
+.btn-quiet:hover {
+  background: var(--file-hover);
+  color: var(--text-1);
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent-wash);
+  color: var(--accent-strong);
+}
+.pill-quiet {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  font-weight: 500;
+}
+.bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-wash);
+  overflow: hidden;
+}
+.bar > div {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+}
+}
+
+/* Motion: windows settle onto the canvas on arrival, staggered by --i. */
+@keyframes win-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.992); }
+  to { opacity: 1; transform: none; }
+}
+.window,
+.terminal {
+  /* Sidebar focus scrolls a window into view; the canvas's scroll-padding (set
+     with its padding in the layout) lands it where a top window sits. */
+  scroll-margin-top: 0;
+  animation: win-in 420ms var(--ease-entry) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .window,
+  .terminal {
+    animation: none;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* ============ THE DESKTOP SHELL (lg and up) ============ */
+/* One viewport: wallpaper under everything, a fixed frame with the sidebar
+   and the canvas, and only the canvas scrolls. Below lg the page scrolls
+   normally. Mirrors alexwil.com's .wallpaper / .canvas-frame / .canvas. */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--desktop-bg);
+  background-image:
+    radial-gradient(60% 50% at 20% 10%, var(--wallpaper-a, var(--accent-wash)) 0%, transparent 60%),
+    radial-gradient(50% 60% at 85% 90%, var(--wallpaper-b, var(--accent-soft)) 0%, transparent 60%);
+  transition: background-color 260ms ease;
+}
+.wallpaper-fx {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+.wallpaper-fx.ready {
+  opacity: 1;
+}
+.wallpaper-fx canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+:root {
+  --wallpaper-a: #ede4d6;
+  --wallpaper-b: #d9cbb8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --wallpaper-a: hsl(86 32% 16%);
+    --wallpaper-b: hsl(128 28% 10%);
+  }
+}
+:root[data-theme="dark"] {
+  --wallpaper-a: hsl(86 32% 16%);
+  --wallpaper-b: hsl(128 28% 10%);
+}
+
+@media (min-width: 1024px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+  .canvas-frame {
+    position: fixed;
+    inset: 22px;
+    z-index: 2;
+    display: flex;
+    border-radius: var(--canvas-radius);
+    overflow: hidden;
+    background: var(--shell-bg);
+    box-shadow: 0 0 0 1px var(--canvas-border), 0 2px 20px rgba(0, 0, 0, 0.1);
+  }
+  .sidebar {
+    /* The site never sets a line-height, so its rows sit on the browser's
+       default; Tailwind's 1.5 was making every sidebar row a few px taller. */
+    line-height: normal;
+    width: 224px;
+    flex: 0 0 224px;
+    background-color: var(--sidebar-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: flex;
+    flex-direction: column;
+    padding: 18px 12px 12px;
+    z-index: 30;
+  }
+  /* The line above the tree, as on alexwil.com: 11px, quiet, inset 8px so it
+     sits inside the frame's corner rather than against it. */
+  .sidebar-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px 14px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+  .plaid-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--text-2);
+    transform: translateY(-0.5px);
+  }
+  .plaid-mark { width: 12px; height: 12.4px; }
+  .plaid-word { width: 30.5px; height: 7.5px; }
+  .sidebar-nav {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .canvas {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    margin: 10px;
+    border-radius: calc(var(--canvas-radius) - 10px);
+    box-shadow: 0 0 0 1px var(--canvas-border), 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 12px rgba(0, 0, 0, 0.08);
+  }
+  .canvas-inner {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 28px;
+  }
+}
+
+/* The site's attention cue: a short shake and a stroke that fades in and out. */
+@keyframes window-attention-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-3px) rotate(-0.5deg); }
+  30% { transform: translateX(2px) rotate(0.3deg); }
+  45% { transform: translateX(-2px) rotate(-0.3deg); }
+  60% { transform: translateX(2px) rotate(0.2deg); }
+  80% { transform: translateX(-1px); }
+}
+@keyframes window-attention-stroke {
+  0%, 100% { opacity: 0; }
+  18%, 68% { opacity: 1; }
+}
+.window {
+  position: relative;
+}
+/* Once the entry animation has played the window drops it, so a later class
+   change (the attention shake) can't restart it and blink the card. */
+.window.settled,
+.terminal.settled {
+  animation: none;
+}
+.window.settled.window-attention {
+  animation: window-attention-shake 400ms ease-out;
+}
+.window.window-attention::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border: 2px solid var(--accent);
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px var(--accent-soft), 0 0 16px var(--accent-soft);
+  opacity: 0;
+  pointer-events: none;
+  animation: window-attention-stroke 480ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .window.window-attention { animation: none; }
+}
+
+/* Trend colors only: one muted green, one muted red, tuned to the warm palette. */
+:root {
+  --negative: #c4443a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --negative: #e26d5f;
+  }
+}
+:root[data-theme="dark"] {
+  --negative: #e26d5f;
+}
+@theme inline {
+  --color-negative: var(--negative);
+}
+
+/* ============ SIDEBAR TREE (alexwil.com) ============ */
+.tree {
+  font-size: 15px;
+  user-select: none;
+}
+.tree-folder {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  font-weight: 560;
+  color: var(--text-1);
+  text-decoration: none;
+  transition: background var(--dur-fast) ease;
+}
+.tree-folder:hover {
+  background: var(--sidebar-active);
+}
+.tree-folder.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.folder-ico {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+}
+/* Both folder layers sit on top of each other inside the 17px box. */
+.tree .folder-ico > .ico {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  flex: none;
+  display: block;
+}
+/* File icons are a 16px box in the row's flow. */
+.tree-item > .ico {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: currentColor;
+}
+.tree .ico svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.15s ease;
+}
+.tree .ico .ico-fill {
+  opacity: 0;
+}
+/* Files: outline at rest, solid on hover. */
+.tree-item:hover .ico .ico-line { opacity: 0; }
+.tree-item:hover .ico .ico-fill { opacity: 1; }
+/* Sections: outline at rest, solid on hover and when active. */
+.tree-folder:hover .ico .ico-line,
+.tree-folder.active .ico .ico-line { opacity: 0; }
+.tree-folder:hover .ico .ico-fill,
+.tree-folder.active .ico .ico-fill { opacity: 1; }
+/* Category glyphs beside descriptions. */
+.cat-ico {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--sidebar-active);
+  color: var(--text-2);
+}
+.cat-ico svg { width: 14px; height: 14px; }
+/* Keyboard focus: an inset ring, so the folded list's overflow can't clip it. */
+.tree-folder:focus-visible,
+.tree-item:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.tree-children {
+  margin-left: 10px;
+  overflow: hidden;
+  max-height: 400px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  opacity: 1;
+  transition:
+    max-height var(--dur-medium, 350ms) var(--ease-entry),
+    opacity var(--dur-base) ease,
+    margin var(--dur-base) ease;
+}
+.tree-children.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font-size: 14.5px;
+  color: var(--text-2);
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.tree-item:hover {
+  background: var(--sidebar-active);
+  color: var(--text-1);
+}
+.tree-item .ico {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+.tree-branch {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-3);
+  opacity: 0.55;
+  width: 11px;
+  flex: 0 0 11px;
+}
+
+/* Mode pills, from the site's footer. */
+.mode-pills {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  background-color: rgba(42, 33, 24, 0.08);
+  border-radius: 999px;
+  padding: 2px;
+}
+:root[data-theme="dark"] .mode-pills {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mode-pills {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+.mode-pill {
+  position: relative;
+  z-index: 1;
+  height: 28px;
+  flex: 1;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color var(--dur-fast) ease, background var(--dur-base) ease;
+}
+.mode-pill .ico {
+  position: relative;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+}
+.mode-pill .ico svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.15s ease;
+}
+.mode-pill .ico .ico-fill { opacity: 0; }
+.mode-pill.active .ico .ico-line,
+.mode-pill:hover .ico .ico-line { opacity: 0; }
+.mode-pill.active .ico .ico-fill,
+.mode-pill:hover .ico .ico-fill { opacity: 1; }
+.mode-pill:hover {
+  color: var(--text-1);
+}
+.mode-pill.active {
+  color: var(--text-1);
+  background: var(--window-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.footer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Terminal boot banner, from the site's .term-ascii / .boot-banner. */
+.terminal .boot-banner {
+  margin: 0 0 8px;
+  color: var(--terminal-accent);
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  line-height: 1;
+  white-space: pre;
+  font-variant-ligatures: none;
+  overflow: hidden;
+}
+.terminal .boot-head {
+  margin-bottom: 2px;
+}
+
+/* Skeletons: the page's windows, empty, with the site's slow shimmer. */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--sidebar-active) 0%, var(--accent-soft) 40%, var(--sidebar-active) 80%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}
+
+/* ============ FLOATING SURFACES ============ */
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pop-in-up {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.popover {
+  position: fixed;
+  z-index: 200;
+  background: var(--window-bg);
+  border-radius: 14px;
+  box-shadow: var(--window-shadow-active);
+  border: 1px solid var(--line-soft);
+  padding: 6px;
+  animation: pop-in 160ms var(--ease-entry) both;
+  transform-origin: top left;
+}
+.popover-up {
+  animation-name: pop-in-up;
+  transform-origin: bottom left;
+}
+.listbox {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.listbox-group {
+  padding: 8px 10px 4px;
+  font-family: var(--font-semi);
+  font-size: 10.5px;
+  font-weight: 520;
+  color: var(--text-3);
+}
+.listbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: background var(--dur-fast) ease;
+}
+.listbox-item.is-active,
+.listbox-item:hover {
+  background: var(--sidebar-active);
+}
+.listbox-item.is-selected {
+  color: var(--accent-strong);
+}
+.listbox-item.is-danger {
+  color: var(--negative);
+}
+.listbox-item.is-disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+@layer components {
+.select-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.select-sm {
+  padding: 5px 10px 5px 12px;
+  font-size: 12.5px;
+}
+.select-chev {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--text-3);
+}
+/* Text-only select trigger: a label with a chevron, no box. Inline under a transaction. */
+.select-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color var(--dur-base, 200ms) ease;
+}
+.select-quiet:hover, .select-quiet[aria-expanded="true"] { color: var(--text-1); }
+.select-quiet:disabled { opacity: 0.6; cursor: default; }
+.select-quiet .select-chev { width: 12px; height: 12px; color: currentColor; opacity: 0.7; }
+}
+.menu-trigger {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.menu-trigger:hover,
+.menu-trigger[aria-expanded="true"] {
+  background: var(--sidebar-active);
+  color: var(--text-1);
+}
+.calendar {
+  padding: 4px;
+}
+.cal-nav {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.cal-nav:hover {
+  background: var(--sidebar-active);
+  color: var(--text-1);
+}
+.cal-day {
+  height: 30px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--text-1);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.cal-day:hover {
+  background: var(--sidebar-active);
+}
+.cal-day.is-today {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.cal-day.is-selected {
+  background: var(--accent);
+  color: #fff;
+}
+.cal-day:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.tabs {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(42, 33, 24, 0.08);
+}
+:root[data-theme="dark"] .tabs { background: rgba(255, 255, 255, 0.08); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tabs { background: rgba(255, 255, 255, 0.08); }
+}
+.tab {
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 12.5px;
+  font-weight: 560;
+  cursor: pointer;
+  transition: color var(--dur-fast) ease, background var(--dur-base) ease;
+}
+.tab.is-active {
+  background: var(--window-bg);
+  color: var(--text-1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* The follow-up after a category change: one quiet line with two small actions. */
+.rule-offer {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--text-2);
+  font-size: 12px;
+  animation: pop-in 160ms var(--ease-entry) both;
+}
+.rule-yes,
+.rule-no {
+  border: 0;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.rule-yes {
+  background: var(--accent);
+  color: #fff;
+}
+.rule-yes:hover { background: var(--accent-strong); }
+.rule-no {
+  background: transparent;
+  color: var(--text-3);
+}
+.rule-no:hover { color: var(--text-1); }
+
+@layer components {
+/* Filter chips. */
+.chip {
+  border-radius: 999px;
+  padding: 7px 12px 7px 14px;
+  font-size: 12.5px;
+}
+.chip-search {
+  padding-left: 34px;
+  width: 240px;
+}
+.chip-toggle {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-2);
+  padding: 6px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.chip-toggle:hover { background: var(--file-hover); color: var(--text-1); }
+.chip-toggle.is-on { background: var(--accent-soft); border-color: transparent; color: var(--accent-strong); font-weight: 600; }
+}
+
+/* Motion: charts draw themselves once their window has settled. Every chart
+   inherits --i from its window so the two staggers line up. */
+@keyframes grow-y { from { transform: scaleY(0); } }
+@keyframes grow-x { from { transform: scaleX(0); } }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes donut-in { from { stroke-dasharray: 0 100; } }
+.grow-y {
+  transform-origin: bottom;
+  animation: grow-y 560ms var(--ease-entry) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 220ms + var(--n, 0) * 35ms);
+}
+.grow-x,
+.bar > div {
+  transform-origin: left;
+  animation: grow-x 640ms var(--ease-entry) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 220ms + var(--n, 0) * 35ms);
+}
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: draw 900ms var(--ease-entry) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 220ms);
+}
+.fade-late {
+  animation: fade 500ms ease-out both;
+  animation-delay: calc(var(--i, 0) * 45ms + 700ms);
+}
+/* One continuous sweep: each segment's duration is its share of the ring and
+   it starts the moment the previous one finishes. */
+.donut-seg {
+  animation: donut-in var(--d, 700ms) linear both;
+  animation-delay: calc(var(--i, 0) * 45ms + 260ms + var(--o, 0ms));
+}
+@media (prefers-reduced-motion: reduce) {
+  .grow-y, .grow-x, .bar > div, .draw, .fade-late, .donut-seg { animation: none; }
+}
+
+/* Group bands inside tables: a collapsed table ignores border-radius on cells
+   (and Safari ignores clip-path on them), so each cell paints its share of the
+   band on a pseudo-element, rounded at the row's ends. */
+.band-soft { --band-bg: color-mix(in oklab, var(--sidebar-active) 60%, transparent); }
+.band-strong { --band-bg: var(--sidebar-active); }
+.band > td,
+.band > th { position: relative; z-index: 0; }
+.band > td::before,
+.band > th::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--band-bg); }
+.band > td:first-child::before,
+.band > th:first-child::before { border-radius: 10px 0 0 10px; }
+.band > td:last-child::before,
+.band > th:last-child::before { border-radius: 0 10px 10px 0; }
+.band > td:only-child::before,
+.band > th:only-child::before { border-radius: 10px; }
+
+/* No rule directly under a band: the band is the divider. */
+.band + tr,
+.band-flat + ul > li:first-child { border-top-color: transparent; }
+
+/* Transaction rows open a detail card. */
+.txn-row { cursor: pointer; transition: background-color var(--dur-base, 200ms) ease; }
+.txn-row:hover, .txn-row.is-open { background-color: color-mix(in oklab, var(--sidebar-active) 60%, transparent); }
+.txn-row:focus-visible { outline-offset: -2px; border-radius: 8px; }
+.txn-detail { padding: 10px 10px 6px; }
+.cat-ico.cat-ico-lg { width: 34px; height: 34px; border-radius: 10px; }
+.cat-ico.cat-ico-lg svg { width: 18px; height: 18px; }
+.txn-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.txn-facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px 14px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 12.5px;
+}
+.txn-facts dt { color: var(--text-3); white-space: nowrap; }
+.txn-facts dd { min-width: 0; overflow-wrap: anywhere; }
+
+/* ============ LOCK SCREEN ============ */
+.login {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: max(6vh, 40px) 24px 26px;
+  color: var(--text-1);
+}
+.login-clock { text-align: center; }
+.login-date { font-size: 15px; font-weight: 500; letter-spacing: 0.01em; opacity: 0.85; }
+.login-time {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: clamp(56px, 9vw, 84px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.login-user { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 6vh; }
+/* A soft pool of the window tint behind the user, so name and field read
+   over the dither without blurring the whole wallpaper. */
+.login-user::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -90px -140px -70px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--window-bg) 78%, transparent), transparent);
+  pointer-events: none;
+}
+.login-foot .mode-pills { flex: 0 0 auto; width: 126px; background-color: transparent; }
+.login-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2A2019;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 12px 32px rgba(0, 0, 0, 0.28);
+  animation: win-in 520ms var(--ease-entry) both;
+}
+.login-name { margin-top: 14px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; animation: win-in 520ms var(--ease-entry) both; animation-delay: 60ms; }
+.login-field { position: relative; margin-top: 14px; width: 240px; animation: win-in 520ms var(--ease-entry) both; animation-delay: 120ms; }
+.login-pill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  height: 36px;
+  padding: 0 40px 0 14px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--window-bg) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(0, 0, 0, 0.06);
+  color: var(--text-1);
+  font-size: 13px;
+  text-align: left;
+  transition: box-shadow var(--dur-fast, 160ms) ease;
+}
+.login-pill:focus-within { box-shadow: inset 0 0 0 1.5px var(--accent), 0 1px 2px rgba(0, 0, 0, 0.06); }
+.login-pill-btn { cursor: pointer; }
+.login-pill-btn:disabled { cursor: default; opacity: 0.75; }
+.login-pill input {
+  all: unset;
+  flex: 1;
+  min-width: 0;
+  color: var(--text-1);
+  font-size: 13px;
+}
+.login-pill input::placeholder { color: var(--text-3); }
+.login-go {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sidebar-active);
+  color: var(--text-2);
+  transition: background var(--dur-fast, 160ms) ease, color var(--dur-fast, 160ms) ease;
+}
+.login-go:hover:not(:disabled) { background: var(--accent); color: #fff; }
+.login-go:disabled { opacity: 0.5; }
+@keyframes login-shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+.login-shake { animation: login-shake 520ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+.login-under { font-size: 12px; text-align: center; max-width: 280px; line-height: 1.35; }
+.login-under:not(:empty) { margin-top: 10px; }
+.login-error { color: var(--negative, #c0392b); }
+.login-hint { color: var(--text-2); }
+/* Glass chips: anything that has to stay readable over the dither. */
+.login-chip {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--window-bg) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.login-links { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 5px 12px; }
+.login-chip-pills { padding: 3px; }
+.login-host.login-chip { padding: 6px 12px; }
+.login-link { font-size: 12px; color: var(--text-2); cursor: pointer; }
+.login-link:hover { color: var(--text-1); text-decoration: underline; text-underline-offset: 3px; }
+.login-dot { color: var(--text-3); font-size: 12px; }
+.login-foot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.login-host { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-3); }
+@media (prefers-reduced-motion: reduce) {
+  .login-avatar, .login-name, .login-field, .login-shake { animation: none; }
+}
+
+/* ============ PHONES ============ */
+/* Below the desktop breakpoint the shell is a normal scrolling page. These
+   rules keep the same windows readable at 375px: a chip row for sections,
+   tighter gutters, and tap targets a thumb can hit. */
+/* Phones: the desktop frame, fixed in place, with the sidebar as a drawer
+   (alexwil.com's hamburger menu) and only the canvas scrolling. */
+.mobile-top-bar, .drawer-backdrop { display: none; }
+@media (max-width: 1023px) {
+  /* iOS Safari pans the whole page sideways past `overflow: hidden` whenever
+     anything lays out wider than the viewport. Pinning the body to the viewport
+     is what it does honor; every phone surface is fixed inside it anyway. */
+  html { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+  .canvas-frame {
+    position: fixed;
+    top: max(10px, env(safe-area-inset-top));
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--canvas-radius);
+    overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black); /* Safari clips scrollers to the corners with this */
+    /* Solid, not frosted: a backdrop filter here would contain the fixed
+       drawer inside the frame, and the site's phone shell is solid for the
+       same reason. */
+    background-color: var(--shell-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 0 0 1px var(--canvas-border), 0 2px 20px rgba(0, 0, 0, 0.1);
+  }
+  .mobile-top-bar {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--canvas-border);
+  }
+  .hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 10px;
+    color: var(--text-1);
+    line-height: 0;
+  }
+  .hamburger:hover { background: var(--sidebar-active); }
+  .hamburger svg { width: 22px; height: 22px; }
+  /* The sidebar becomes an opaque sheet off the left edge. */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 300;
+    width: min(256px, 88vw);
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    /* alexwil.com's drawer insets: 16px at the sides, 28px under the footer. */
+    padding: calc(env(safe-area-inset-top, 0px) + 18px) 16px calc(env(safe-area-inset-bottom, 0px) + 28px);
+    background-color: var(--shell-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.3);
+    transform: translateX(-105%);
+    transition: transform var(--dur-medium, 350ms) var(--ease-entry);
+    touch-action: pan-y;
+  }
+  .sidebar.open { transform: none; }
+  .sidebar .sidebar-hint { display: none; }
+  .sidebar-nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 299;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-base, 200ms) ease;
+  }
+  .drawer-backdrop.visible { opacity: 1; pointer-events: auto; }
+  /* Concentric with the frame: gutter on all four sides, inner radius = outer − gutter. */
+  .canvas {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin: var(--canvas-gutter, 10px);
+    border-radius: calc(var(--canvas-radius) - var(--canvas-gutter, 10px));
+    overflow: hidden;
+  }
+  .canvas-inner {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 1023px) {
+  /* Windows sit edge to edge on a phone; 22px of inset on each side was a fifth of the width. */
+  /* Only bodies that carry the 22px inset shrink; flush tables keep their edges. */
+  .terminal { padding-left: 16px; padding-right: 16px; }
+  /* The transaction detail sits at the bottom of the screen as a sheet. Inline
+     placement is overridden; it still closes on the first tap or scroll outside. */
+  .popover.txn-sheet {
+    top: auto !important;
+    left: 10px !important;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px));
+    width: auto !important;
+    max-width: none;
+    padding: 10px;
+    border-radius: 18px;
+    animation-name: sheet-in;
+    transform-origin: bottom center;
+  }
+  .txn-detail { padding: 8px 8px 6px; }
+  .window [class*="px-[22px]"] { padding-left: 16px; padding-right: 16px; }
+  .window [class*="pl-[22px]"] { padding-left: 16px; }
+  .window [class*="pr-[22px]"] { padding-right: 16px; }
+  .window .titlebar { padding-left: 16px; padding-right: 16px; }
+  .canvas-inner [class*="gap-[18px]"] { gap: 12px; }
+  .canvas-inner [class*="grid-rows-[1fr_auto]"] { grid-template-rows: auto auto; }
+  .btn { min-height: 40px; }
+  .field { min-height: 40px; }
+  /* iOS zooms the page when a focused field's text is under 16px. */
+  input, select, textarea, .field { font-size: 16px; }
+  .select-btn { min-height: 40px; }
+  .window table { font-size: 13px; }
+  .window td .select-btn { max-width: 100%; }
+  .window td .select-btn > span > span { overflow: hidden; text-overflow: ellipsis; }
+  .login { padding-top: max(5vh, 28px); }
+  .login-time { font-size: clamp(48px, 16vw, 64px); }
+}
+
+/* Native date and time inputs: iOS refuses to shrink them and draws them
+   blank until tapped. Let them shrink, keep their height, and show the
+   value left-aligned like every other field. */
+input[type="time"], input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  width: 100%;
+  min-height: 40px;
+}
+input[type="time"]::-webkit-date-and-time-value, input[type="date"]::-webkit-date-and-time-value { text-align: left; min-height: 1.3em; }
+input[type="time"]:invalid::-webkit-datetime-edit, input[type="time"]::-webkit-datetime-edit-fields-wrapper { color: var(--text-1); }
+
+/* The phone list's group bands: same rounding as the table bands, no clip-path needed. */
+.band-flat { border-radius: 10px; }
