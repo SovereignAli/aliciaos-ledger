@@ -33,6 +33,9 @@ export async function createLinkToken(institutionId?: string): Promise<LinkToken
       client_name: LINK_CLIENT_NAME,
       language: "en",
       country_codes: [CountryCode.Us],
+      // OAuth institutions (Chase, Capital One, ...) send the browser to the bank and back
+      // here. Must be https and registered under Developers → API settings in the Plaid dashboard.
+      ...(process.env.PLAID_REDIRECT_URI ? { redirect_uri: process.env.PLAID_REDIRECT_URI } : {}),
     };
     const req = institutionId
       ? { ...base, access_token: (await loadConnection(getSql(), institutionId)).accessToken ?? undefined }
