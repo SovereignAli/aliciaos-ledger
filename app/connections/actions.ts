@@ -45,8 +45,19 @@ export async function createLinkToken(institutionId?: string): Promise<LinkToken
           required_if_supported_products: [Products.Investments],
           transactions: { days_requested: HISTORY_DAYS },
         };
-    const res = await plaid.linkTokenCreate(req);
-    return { ok: true, linkToken: res.data.link_token };
+    try {
+      const res = await plaid.linkTokenCreate(req);
+      return { ok: true, linkToken: res.data.link_token };
+    } catch (err) {
+      // Until the redirect URI is registered in the Plaid dashboard, Plaid refuses any
+      // request that names it. Retry without it so credential-based banks still link;
+      // OAuth banks will refuse inside Link until the dashboard step is done.
+      if (!("redirect_uri" in req) || !/redirect/i.test(plaidMessage(err))) throw err;
+      const { redirect_uri: _dropped, ...withoutRedirect } = req;
+      void _dropped;
+      const res = await plaid.linkTokenCreate(withoutRedirect);
+      return { ok: true, linkToken: res.data.link_token };
+    }
   } catch (err) {
     return { ok: false, message: plaidMessage(err) };
   }
