@@ -1,43 +1,44 @@
 @import "tailwindcss";
 
 /*
- * AlexOS tokens, lifted from alexwil.com/site/styles.css.
- * Light = the site's "Alex mode" (warm paper). Dark = the site's dark mode.
+ * AliciaOS tokens. The palette is the wallpaper's: plum #2f153d, violet
+ * #774794, lavender #c285ff. Dark is the primary look (the shader runs in
+ * those exact colors); light is the same hues on pale paper.
  */
 :root {
   color-scheme: light dark;
-  --hue: 28;
-  --accent: #8b6848;
-  --accent-strong: #6b4e33;
-  --accent-soft: rgba(139, 104, 72, 0.14);
-  --accent-wash: #e8d8c2;
-  --desktop-bg: #e8e0d4;
-  --canvas-bg: #f7f1e8;
-  --canvas-dot: #d8cfc0;
-  --canvas-border: rgba(42, 33, 24, 0.12);
-  --shell-bg: #e7dccb;
-  --sidebar-bg: rgba(233, 222, 203, 0.86);
-  --sidebar-border: rgba(42, 33, 24, 0.08);
-  --sidebar-active: rgba(42, 33, 24, 0.06);
-  --window-bg: #fbf6ee;
-  --window-shadow: 0 0 0 0.5px rgba(42, 33, 24, 0.07), 0 1px 1px rgba(42, 33, 24, 0.04), 0 4px 12px -2px rgba(42, 33, 24, 0.06), 0 12px 28px -6px rgba(42, 33, 24, 0.07);
-  --window-shadow-active: 0 0 0 0.5px rgba(42, 33, 24, 0.1), 0 2px 3px rgba(42, 33, 24, 0.06), 0 8px 20px -4px rgba(42, 33, 24, 0.08), 0 24px 48px -12px rgba(42, 33, 24, 0.1);
-  --title-text: #6b5e50;
-  --tl-inactive: #c8bdb0;
-  --text-1: #2a2118;
-  --text-2: #5c4f42;
-  --text-3: #7a6b5a;
-  --line: rgba(42, 33, 24, 0.1);
-  --line-soft: rgba(42, 33, 24, 0.06);
-  --file-hover: rgba(42, 33, 24, 0.045);
-  --terminal-bg: rgba(36, 28, 20, 0.92);
-  --terminal-border: rgba(240, 220, 196, 0.14);
-  --terminal-text: #f0e6d8;
-  --terminal-dim: #9a8b78;
-  --terminal-accent: #d4a574;
-  --positive: #4a8a3f;
-  --warn: #b4541c;
-  --crit: #a32450;
+  --hue: 275;
+  --accent: #774794;
+  --accent-strong: #4f2a6b;
+  --accent-soft: rgba(119, 71, 148, 0.14);
+  --accent-wash: #dfd0ee;
+  --desktop-bg: #ece4f5;
+  --canvas-bg: #f6f1fb;
+  --canvas-dot: #d9cde6;
+  --canvas-border: rgba(47, 21, 61, 0.12);
+  --shell-bg: #e6dcf2;
+  --sidebar-bg: rgba(238, 230, 246, 0.86);
+  --sidebar-border: rgba(47, 21, 61, 0.08);
+  --sidebar-active: rgba(47, 21, 61, 0.06);
+  --window-bg: #fcfaff;
+  --window-shadow: 0 0 0 0.5px rgba(47, 21, 61, 0.07), 0 1px 1px rgba(47, 21, 61, 0.04), 0 4px 12px -2px rgba(47, 21, 61, 0.06), 0 12px 28px -6px rgba(47, 21, 61, 0.08);
+  --window-shadow-active: 0 0 0 0.5px rgba(47, 21, 61, 0.1), 0 2px 3px rgba(47, 21, 61, 0.06), 0 8px 20px -4px rgba(47, 21, 61, 0.08), 0 24px 48px -12px rgba(47, 21, 61, 0.12);
+  --title-text: #5e4d70;
+  --tl-inactive: #c4b6d1;
+  --text-1: #22132e;
+  --text-2: #4f3f5e;
+  --text-3: #776a86;
+  --line: rgba(47, 21, 61, 0.12);
+  --line-soft: rgba(47, 21, 61, 0.07);
+  --file-hover: rgba(47, 21, 61, 0.045);
+  --terminal-bg: rgba(47, 21, 61, 0.94);
+  --terminal-border: rgba(194, 133, 255, 0.22);
+  --terminal-text: #f1e8fa;
+  --terminal-dim: #a08fb3;
+  --terminal-accent: #c285ff;
+  --positive: #3f8a4e;
+  --warn: #b8651c;
+  --crit: #b02a5a;
   --win-radius: 28px;
   --canvas-radius: 20px;
   --canvas-gutter: 10px;
@@ -47,71 +48,71 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --accent: #b79f84;
-    --accent-strong: #d8c3a9;
-    --accent-soft: rgba(183, 159, 132, 0.14);
-    --accent-wash: #342d26;
-    --desktop-bg: #0b0c0a;
-    --canvas-bg: #0e0e0e;
-    --canvas-dot: #262626;
+    --accent: #c285ff;
+    --accent-strong: #d9b8ff;
+    --accent-soft: rgba(194, 133, 255, 0.16);
+    --accent-wash: #2f153d;
+    --desktop-bg: #12081c;
+    --canvas-bg: #150b1f;
+    --canvas-dot: #2a1b38;
     --canvas-border: rgba(255, 255, 255, 0.07);
-    --shell-bg: #1a1a19;
-    --sidebar-bg: rgba(28, 28, 27, 0.8);
+    --shell-bg: #1c1128;
+    --sidebar-bg: rgba(28, 17, 40, 0.8);
     --sidebar-border: rgba(255, 255, 255, 0.05);
     --sidebar-active: rgba(255, 255, 255, 0.06);
-    --window-bg: #181818;
+    --window-bg: #1b1026;
     --window-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 20px -4px rgba(0, 0, 0, 0.35), 0 20px 40px -8px rgba(0, 0, 0, 0.3);
     --window-shadow-active: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 2px 4px rgba(0, 0, 0, 0.4), 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 32px 56px -12px rgba(0, 0, 0, 0.4);
-    --title-text: #9e9e9e;
-    --tl-inactive: #565658;
-    --text-1: #e8e8e8;
-    --text-2: #aaaaaa;
-    --text-3: #8a8a8a;
+    --title-text: #a897b8;
+    --tl-inactive: #4a3a5a;
+    --text-1: #f3ecfa;
+    --text-2: #b9a9c9;
+    --text-3: #8c7aa0;
     --line: rgba(255, 255, 255, 0.09);
     --line-soft: rgba(255, 255, 255, 0.06);
     --file-hover: rgba(255, 255, 255, 0.04);
-    --terminal-bg: rgba(8, 9, 8, 0.8);
-    --terminal-border: rgba(255, 255, 255, 0.1);
-    --terminal-text: #e5e5e5;
-    --terminal-dim: #808080;
-    --terminal-accent: #c9ab86;
-    --positive: #7cc26a;
-    --warn: #ce6a33;
-    --crit: #d9557e;
+    --terminal-bg: rgba(18, 8, 28, 0.85);
+    --terminal-border: rgba(194, 133, 255, 0.18);
+    --terminal-text: #ede3f7;
+    --terminal-dim: #8c7aa0;
+    --terminal-accent: #c285ff;
+    --positive: #7fd39a;
+    --warn: #e0a04a;
+    --crit: #ef5d8a;
   }
 }
 :root[data-theme="dark"] {
-  --accent: #b79f84;
-  --accent-strong: #d8c3a9;
-  --accent-soft: rgba(183, 159, 132, 0.14);
-  --accent-wash: #342d26;
-  --desktop-bg: #0b0c0a;
-  --canvas-bg: #0e0e0e;
-  --canvas-dot: #262626;
+  --accent: #c285ff;
+  --accent-strong: #d9b8ff;
+  --accent-soft: rgba(194, 133, 255, 0.16);
+  --accent-wash: #2f153d;
+  --desktop-bg: #12081c;
+  --canvas-bg: #150b1f;
+  --canvas-dot: #2a1b38;
   --canvas-border: rgba(255, 255, 255, 0.07);
-  --shell-bg: #1a1a19;
-  --sidebar-bg: rgba(28, 28, 27, 0.8);
+  --shell-bg: #1c1128;
+  --sidebar-bg: rgba(28, 17, 40, 0.8);
   --sidebar-border: rgba(255, 255, 255, 0.05);
   --sidebar-active: rgba(255, 255, 255, 0.06);
-  --window-bg: #181818;
+  --window-bg: #1b1026;
   --window-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 20px -4px rgba(0, 0, 0, 0.35), 0 20px 40px -8px rgba(0, 0, 0, 0.3);
   --window-shadow-active: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 2px 4px rgba(0, 0, 0, 0.4), 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 32px 56px -12px rgba(0, 0, 0, 0.4);
-  --title-text: #9e9e9e;
-  --tl-inactive: #565658;
-  --text-1: #e8e8e8;
-  --text-2: #aaaaaa;
-  --text-3: #8a8a8a;
+  --title-text: #a897b8;
+  --tl-inactive: #4a3a5a;
+  --text-1: #f3ecfa;
+  --text-2: #b9a9c9;
+  --text-3: #8c7aa0;
   --line: rgba(255, 255, 255, 0.09);
   --line-soft: rgba(255, 255, 255, 0.06);
   --file-hover: rgba(255, 255, 255, 0.04);
-  --terminal-bg: rgba(8, 9, 8, 0.8);
-  --terminal-border: rgba(255, 255, 255, 0.1);
-  --terminal-text: #e5e5e5;
-  --terminal-dim: #808080;
-  --terminal-accent: #c9ab86;
-  --positive: #8fae76;
-  --warn: #ce6a33;
-  --crit: #d9557e;
+  --terminal-bg: rgba(18, 8, 28, 0.85);
+  --terminal-border: rgba(194, 133, 255, 0.18);
+  --terminal-text: #ede3f7;
+  --terminal-dim: #8c7aa0;
+  --terminal-accent: #c285ff;
+  --positive: #7fd39a;
+  --warn: #e0a04a;
+  --crit: #ef5d8a;
 }
 
 @theme inline {
@@ -136,9 +137,9 @@
   --color-terminal-text: var(--terminal-text);
   --color-terminal-dim: var(--terminal-dim);
   --color-terminal-accent: var(--terminal-accent);
-  --font-sans: var(--font-zalando), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-zalando-expanded), var(--font-zalando), system-ui, sans-serif;
-  --font-semi: var(--font-zalando-semi), var(--font-zalando), system-ui, sans-serif;
+  --font-sans: var(--font-instrument-sans), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
+  --font-semi: var(--font-instrument-sans), system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --radius-win: var(--win-radius);
   --radius-canvas: var(--canvas-radius);
@@ -173,6 +174,39 @@ body {
   background: var(--accent-soft);
 }
 
+/* Scrollbars: no default chrome anywhere. A thin lavender thumb on a
+   transparent track appears only where something actually overflows, and
+   only while the pointer is over it. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: color-mix(in oklab, var(--accent) 45%, transparent) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--accent) 45%, transparent);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--accent) 70%, transparent);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .num {
   font-variant-numeric: tabular-nums;
 }
@@ -181,10 +215,19 @@ body {
 }
 .eyebrow {
   font-family: var(--font-semi);
-  font-size: 11px;
-  font-weight: 520;
+  font-size: 10.5px;
+  font-weight: 500;
   color: var(--text-3);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Instrument Serif ships one weight. This rule is unlayered, so it outranks
+   Tailwind's font-[750] and font-bold utilities (which live in a cascade
+   layer) and browsers never fake a bold; the size carries the emphasis. */
+.font-display {
+  font-weight: 400;
+  font-synthesis: none;
+  font-feature-settings: "lnum";
 }
 
 /* A window: the site's card. */
@@ -385,18 +428,18 @@ select.field {
   object-fit: cover;
 }
 :root {
-  --wallpaper-a: #ede4d6;
-  --wallpaper-b: #d9cbb8;
+  --wallpaper-a: #e3d5f2;
+  --wallpaper-b: #cdb9e6;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --wallpaper-a: hsl(86 32% 16%);
-    --wallpaper-b: hsl(128 28% 10%);
+    --wallpaper-a: #2f153d;
+    --wallpaper-b: #1a0f2a;
   }
 }
 :root[data-theme="dark"] {
-  --wallpaper-a: hsl(86 32% 16%);
-  --wallpaper-b: hsl(128 28% 10%);
+  --wallpaper-a: #2f153d;
+  --wallpaper-b: #1a0f2a;
 }
 
 @media (min-width: 1024px) {
@@ -515,17 +558,17 @@ select.field {
   .window.window-attention { animation: none; }
 }
 
-/* Trend colors only: one muted green, one muted red, tuned to the warm palette. */
+/* Trend colors only: one muted green, one rose red, tuned to the plum palette. */
 :root {
-  --negative: #c4443a;
+  --negative: #b8305c;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --negative: #e26d5f;
+    --negative: #ef6b96;
   }
 }
 :root[data-theme="dark"] {
-  --negative: #e26d5f;
+  --negative: #ef6b96;
 }
 @theme inline {
   --color-negative: var(--negative);
@@ -731,15 +774,15 @@ select.field {
 }
 
 /* Terminal boot banner, from the site's .term-ascii / .boot-banner. */
-.terminal .boot-banner {
-  margin: 0 0 8px;
+/* The terminal's wordmark: the serif, italic, in the accent. */
+.terminal .boot-mark {
+  margin: 0 0 6px;
   color: var(--terminal-accent);
-  font-family: var(--font-mono);
-  font-size: 7.5px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 34px;
   line-height: 1;
-  white-space: pre;
-  font-variant-ligatures: none;
-  overflow: hidden;
+  letter-spacing: -0.01em;
 }
 .terminal .boot-head {
   margin-bottom: 2px;
@@ -1114,9 +1157,9 @@ select.field {
 .login-time {
   margin-top: 2px;
   font-family: var(--font-display);
-  font-size: clamp(56px, 9vw, 84px);
-  font-weight: 600;
-  letter-spacing: -0.035em;
+  font-size: clamp(64px, 10vw, 96px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 .login-user { position: relative; display: flex; flex-direction: column; align-items: center; margin-bottom: 6vh; }
@@ -1137,11 +1180,11 @@ select.field {
   height: 92px;
   border-radius: 50%;
   object-fit: cover;
-  background: #2A2019;
+  background: var(--accent-wash);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 12px 32px rgba(0, 0, 0, 0.28);
   animation: win-in 520ms var(--ease-entry) both;
 }
-.login-name { margin-top: 14px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; animation: win-in 520ms var(--ease-entry) both; animation-delay: 60ms; }
+.login-name { margin-top: 14px; font-family: var(--font-display); font-size: 26px; font-weight: 400; letter-spacing: -0.005em; line-height: 1; animation: win-in 520ms var(--ease-entry) both; animation-delay: 60ms; }
 .login-field { position: relative; margin-top: 14px; width: 240px; animation: win-in 520ms var(--ease-entry) both; animation-delay: 120ms; }
 .login-pill {
   display: flex;
@@ -1354,7 +1397,7 @@ select.field {
   .window td .select-btn { max-width: 100%; }
   .window td .select-btn > span > span { overflow: hidden; text-overflow: ellipsis; }
   .login { padding-top: max(5vh, 28px); }
-  .login-time { font-size: clamp(48px, 16vw, 64px); }
+  .login-time { font-size: clamp(52px, 17vw, 72px); }
 }
 
 /* Native date and time inputs: iOS refuses to shrink them and draws them

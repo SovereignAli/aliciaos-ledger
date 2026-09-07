@@ -40,11 +40,14 @@ export function LoginScreen({ busy }: { busy?: string }) {
     setPending(false);
   };
 
+  // Clerk's sso(): redirectUrl is where a completed sign-in lands; redirectCallbackUrl is the
+  // page that finishes a flow that still needs something. Swapping them sends a finished
+  // sign-in through the callback handler again, which ends on Clerk's hosted fallback page.
   const google = async () => {
     if (!isLoaded || pending) return;
     setError(null);
     setPending(true);
-    const { error: e } = await signIn.sso({ strategy: "oauth_google", redirectUrl: "/sign-in/sso-callback", redirectCallbackUrl: "/sign-in" });
+    const { error: e } = await signIn.sso({ strategy: "oauth_google", redirectUrl: "/", redirectCallbackUrl: "/sign-in/sso-callback" });
     if (e) fail(e);
   };
 
@@ -87,7 +90,7 @@ export function LoginScreen({ busy }: { busy?: string }) {
         <div className="login-user">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="login-avatar" src="/mark.svg" alt="" width={92} height={92} />
-          <div className="login-name">Alex Wilczewski</div>
+          <div className="login-name">Alicia Wilczewski</div>
 
           <form className={`login-field ${shake ? "login-shake" : ""}`} key={shake} onSubmit={submit}>
             {mode === "google" ? (
@@ -130,7 +133,7 @@ export function LoginScreen({ busy }: { busy?: string }) {
 
         <div className="login-foot">
           <div className="login-chip login-chip-pills"><ThemeToggle /></div>
-          <div className="login-host login-chip">ledger.example.com</div>
+          <div className="login-host login-chip">ledger.alistation.net</div>
         </div>
       </main>
     </>

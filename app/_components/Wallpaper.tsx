@@ -4,16 +4,19 @@ import { useEffect, useRef } from "react";
 import type { ShaderMount, ShaderMountUniforms } from "@paper-design/shaders";
 
 /**
- * The site's animated backdrop: one dithering shader, two palettes (light is
- * the site's Alex mode, dark is its dark). Lazy-loaded, skipped under reduced
+ * Alicia's animated backdrop: Paper's Warp shader, checks pattern, in her
+ * plum-to-lavender palette. The preset is the one she picked at
+ * shaders.paper.design (proportion .5, softness 1, distortion .09, swirl .9,
+ * six iterations, checks at .25, scale 2.5, rotation 1.35); light mode runs
+ * the same motion through paler tints. Lazy-loaded, skipped under reduced
  * motion or without WebGL2, and the CSS wallpaper underneath is the finished
- * background either way. Presets copied from alexwil.com/site/shaders.js.
+ * background either way.
  */
 const PALETTE = {
-  light: { back: "#F2EADC", front: "#A38B6B" },
-  dark: { back: "#0B0C0A", front: "#6B5E46" },
+  dark: ["#2f153d", "#774794", "#c285ff"],
+  light: ["#efe6f8", "#c9ade4", "#9a6ec3"],
 } as const;
-const DRIFT = 0.06;
+const SPEED = 2;
 const MAX_PIXELS = 1920 * 1080;
 const MAX_PIXELS_MOBILE = 1280 * 720;
 
@@ -50,10 +53,13 @@ export function Wallpaper() {
     let mode = currentMode();
 
     import("@paper-design/shaders")
-      .then((lib) => {
+      .then(async (lib) => {
+        // Warp samples a small noise image; the mount refuses it until it has decoded.
+        const noise = lib.getShaderNoiseTexture();
+        if (noise && !noise.complete) await new Promise<void>((done) => { noise.onload = () => done(); noise.onerror = () => done(); });
         if (disposed) return;
-        const sizing = { ...lib.defaultPatternSizing, scale: 0.8 };
-        const grid = {
+        const sizing = { ...lib.defaultPatternSizing, scale: 2.5, rotation: 1.35 };
+        const base: ShaderMountUniforms = {
           u_fit: lib.ShaderFitOptions[sizing.fit],
           u_scale: sizing.scale,
           u_rotation: sizing.rotation,
@@ -63,14 +69,22 @@ export function Wallpaper() {
           u_originY: sizing.originY,
           u_worldWidth: sizing.worldWidth,
           u_worldHeight: sizing.worldHeight,
-          u_shape: lib.DitheringShapes.warp,
-          u_type: lib.DitheringTypes["8x8"],
-          u_pxSize: 3,
+          u_proportion: 0.5,
+          u_softness: 1,
+          u_shape: lib.WarpPatterns.checks,
+          u_shapeScale: 0.25,
+          u_distortion: 0.09,
+          u_swirl: 0.9,
+          u_swirlIterations: 6,
+          u_noiseTexture: noise,
         };
-        uniformsFor = (m) => ({ ...grid, u_colorBack: lib.getShaderColorFromString(PALETTE[m].back), u_colorFront: lib.getShaderColorFromString(PALETTE[m].front) });
+        uniformsFor = (m) => {
+          const colors = PALETTE[m].map((c) => lib.getShaderColorFromString(c));
+          return { ...base, u_colors: colors, u_colorsCount: colors.length };
+        };
         const mobile = window.matchMedia("(max-width: 860px)").matches;
         try {
-          mount = new lib.ShaderMount(host, lib.ditheringFragmentShader, uniformsFor(mode), undefined, DRIFT, 0, 1, mobile ? MAX_PIXELS_MOBILE : MAX_PIXELS);
+          mount = new lib.ShaderMount(host, lib.warpFragmentShader, uniformsFor(mode), undefined, SPEED, 0, 1, mobile ? MAX_PIXELS_MOBILE : MAX_PIXELS);
           host.classList.add("ready");
         } catch (err) {
           console.warn("Shader backdrop disabled:", err);

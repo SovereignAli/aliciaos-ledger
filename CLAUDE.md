@@ -85,8 +85,9 @@ as bucket funding. `is_internal` is user-editable and a manual correction is aut
 
 ## Open decisions (to settle with Alicia before phase one)
 
-- **Domain.** Not yet purchased. Until it exists, `proxy.ts` carries `ledger.example.com` as a
-  placeholder in `authorizedParties`; the login screen's host chip and the README say the same.
+- **Domain.** `ledger.alistation.net`, a subdomain of her Namecheap domain, added to the Vercel project on
+  2026-09-07. `proxy.ts` lists it in `authorizedParties` and the login screen's host chip shows
+  it. Clerk's production instance, which a custom domain requires, is still to be created.
 - **Plaid account.** Alex's Plaid trial has spare Items, but linking Alicia's banks under his
   developer account puts her data behind his credentials. Prefer her own Plaid account; decide
   before linking anything.
@@ -94,10 +95,14 @@ as bucket funding. `is_internal` is user-editable and a manual correction is aut
   (a quick live probe) before promising sync.
 - **Her split.** The seed policy is 10% buffer, 15% investing. It is a starting point to edit in
   the app, not a recommendation.
-- **Styling.** Everything visual is still Alex's: the tokens at the top of `app/globals.css`, the
-  Zalando Sans files in `public/fonts` loaded from `app/layout.tsx`, the shader presets in
-  `app/_components/Wallpaper.tsx`, the boot banner on the overview page, and the icons in `app/`
-  and `public/mark.svg`. Restyle for her once the functional pieces are hers; show it early.
+- **Styling.** Done on 2026-09-07 as Alicia's own look: plum / violet / lavender tokens
+  (#2f153d, #774794, #c285ff) at the top of `app/globals.css`; Instrument Serif for big numbers,
+  headings and the lock-screen clock, Instrument Sans for readable text, both via
+  `next/font/google` in `app/layout.tsx`; Paper's Warp shader (checks pattern, her preset from
+  shaders.paper.design) in `app/_components/Wallpaper.tsx`; a serif "Ledger" wordmark in the
+  terminal window; concentric plum-and-lavender marks in `app/icon.svg` and `public/mark.svg`.
+  Instrument Serif has one weight, so `.font-display` in `globals.css` pins weight 400 and
+  disables synthesis. `app/apple-icon.png` is still Alex's and needs regenerating from the mark.
 
 ## Build order
 

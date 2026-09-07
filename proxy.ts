@@ -21,8 +21,7 @@ export default clerkMiddleware(
   {
     // Session tokens are only honored when minted for one of these origins.
     // Clerk's production checklist asks for this explicitly.
-    // Replace the first two with Alicia's domain and Vercel URL once they exist.
-    authorizedParties: ["https://ledger.example.com", "https://aliciaos-ledger.vercel.app", "http://localhost:3000"],
+    authorizedParties: ["https://ledger.alistation.net", "https://aliciaos-ledger.vercel.app", "http://localhost:3000"],
     // Nonce-based CSP with 'strict-dynamic'. No 'unsafe-inline' for scripts.
     contentSecurityPolicy: {
       strict: true,

@@ -43,7 +43,7 @@ export default async function SavingsPage() {
   return (
     <div className="grid grid-cols-12 gap-[18px]">
       <div className="col-span-12 flex flex-col lg:col-span-4">
-        <AccountCards accounts={accounts} lead="Money that sits and grows. Interest here counts for taxes, never as money to spend." style={idx(0)}>
+        <AccountCards accounts={accounts} lead="Money that sits and grows. Interest lands as passive income, never as money to spend." style={idx(0)}>
           {months.length ? (
             <div className="mt-5">
               <div className="eyebrow mb-2">Interest by month</div>
@@ -71,7 +71,7 @@ export default async function SavingsPage() {
       </Window>
 
       <div className="col-span-12 grid grid-cols-1 gap-[18px] sm:grid-cols-3">
-        <div style={idx(2)}><StatTile label={`${year} interest`} value={formatCents(totals.passive)} hint={apy !== null ? `At ${apy.toFixed(2)}%, about ${formatCents(BigInt(Math.round(Number(total) * apy / 100)))} a year from here.` : "Passive income, taxable."} /></div>
+        <div style={idx(2)}><StatTile label={`${year} interest`} value={formatCents(totals.passive)} hint={apy !== null ? `At ${apy.toFixed(2)}%, about ${formatCents(BigInt(Math.round(Number(total) * apy / 100)))} a year from here.` : "Passive income."} /></div>
         <div style={idx(3)}><StatTile label={`${year} added`} value={formatCents(totals.contributions)} hint="Your deposits." /></div>
         <div style={idx(4)}><StatTile label="Last deposit" value={lastDeposit ? fmtDate(DAY, lastDeposit.postedAt) : "—"} hint={lastDeposit ? `${formatCents(lastDeposit.amount)}.` : "None yet."} /></div>
       </div>

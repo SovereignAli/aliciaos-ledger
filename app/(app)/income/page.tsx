@@ -103,7 +103,7 @@ export default async function IncomePage() {
         </Window>
       </div>
 
-      <TxnList txns={passive} categories={categories} emptyText="No interest or dividends yet." title="Passive income" right="Real for taxes, not for spending." className="col-span-12" style={idx(8)} />
+      <TxnList txns={passive} categories={categories} emptyText="No interest or dividends yet." title="Passive income" right="Not money to spend." className="col-span-12" style={idx(8)} />
     </div>
   );
 }

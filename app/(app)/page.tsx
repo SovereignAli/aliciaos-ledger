@@ -13,15 +13,6 @@ import { BucketBar } from "../_components/BucketBar";
 import { NetDot, Trend } from "../_components/Trend";
 import { BucketIcon, CategoryIcon } from "../_components/HeroIcons";
 
-/* The site's boot wordmark font (ANSI Shadow), spelling the app instead. */
-const BANNER = [
-  "██╗     ███████╗██████╗  ██████╗ ███████╗██████╗ ",
-  "██║     ██╔════╝██╔══██╗██╔════╝ ██╔════╝██╔══██╗",
-  "██║     █████╗  ██║  ██║██║  ███╗█████╗  ██████╔╝",
-  "██║     ██╔══╝  ██║  ██║██║   ██║██╔══╝  ██╔══██╗",
-  "███████╗███████╗██████╔╝╚██████╔╝███████╗██║  ██║",
-  "╚══════╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝",
-];
 const WHEN = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
 
 export default async function OverviewPage() {
@@ -99,7 +90,7 @@ export default async function OverviewPage() {
 
         {/* Terminal: sync state */}
         <div className="terminal order-last col-span-12 px-[18px] py-4 sm:col-span-6 lg:order-none lg:col-span-3" style={{ "--i": 2 } as React.CSSProperties}>
-          <pre className="boot-banner" aria-hidden="true">{BANNER.join("\n")}</pre>
+          <div className="boot-mark" aria-hidden="true">Ledger</div>
           <div className="boot-head"><span className="text-terminal-accent">ledger</span> <span className="text-terminal-dim">1.0.0 · sync</span></div>
           <div className="mt-auto pt-4 text-terminal-accent">$ ledger sync</div>
           {institutions.map((i) => (

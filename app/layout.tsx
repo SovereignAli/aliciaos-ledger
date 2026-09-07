@@ -1,30 +1,31 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import localFont from "next/font/local";
+import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import { cspNonce } from "@/lib/request";
 import "./globals.css";
 
-/* The site's typeface, self-hosted from the same files alexwil.com ships. */
-const zalando = localFont({
-  variable: "--font-zalando",
-  src: [
-    { path: "../public/fonts/ZalandoSans.woff2", weight: "100 900", style: "normal" },
-    { path: "../public/fonts/ZalandoSans-Italic.woff2", weight: "100 900", style: "italic" },
-  ],
+/*
+ * Alicia's type: Instrument Serif for the big numbers and headings, Instrument
+ * Sans for everything meant to be read. Both are fetched at build time by
+ * next/font and self-hosted from the deployment, so nothing loads from Google
+ * at runtime. Instrument Serif ships one weight; see .font-display in
+ * globals.css, which keeps browsers from faking a bold.
+ */
+const serif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
   display: "swap",
 });
-const zalandoExpanded = localFont({
-  variable: "--font-zalando-expanded",
-  src: [{ path: "../public/fonts/ZalandoSans-Expanded.woff2", weight: "100 900", style: "normal" }],
-  display: "swap",
-});
-const zalandoSemi = localFont({
-  variable: "--font-zalando-semi",
-  src: [{ path: "../public/fonts/ZalandoSans-SemiExpanded.woff2", weight: "100 900", style: "normal" }],
+const sans = Instrument_Sans({
+  variable: "--font-instrument-sans",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
   display: "swap",
 });
 
-export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" as const, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#E8E0D4" }, { media: "(prefers-color-scheme: dark)", color: "#0B0C0A" }] };
+export const viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" as const, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#ECE4F5" }, { media: "(prefers-color-scheme: dark)", color: "#12081C" }] };
 
 export const metadata: Metadata = {
   title: { default: "AliciaOS Ledger", template: "%s · AliciaOS Ledger" },
@@ -38,7 +39,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nonce = await cspNonce();
   return (
     <ClerkProvider dynamic>
-      <html lang="en" className={`${zalando.variable} ${zalandoExpanded.variable} ${zalandoSemi.variable} h-full`} suppressHydrationWarning>
+      <html lang="en" className={`${serif.variable} ${sans.variable} h-full`} suppressHydrationWarning>
         <head>
           <script nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         </head>

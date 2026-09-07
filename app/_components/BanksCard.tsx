@@ -10,11 +10,11 @@ function shortName(name: string): string {
   return name;
 }
 
-/** Sidebar summary: every linked bank, its balance, and whether it's healthy. */
+/** Sidebar summary: every linked bank, its balance, and whether it's healthy. Opens Settings, where connections are managed. */
 export function BanksCard({ institutions }: { institutions: LinkedInstitution[] }) {
   const latest = institutions.map((i) => i.lastSyncedAt).filter(Boolean).sort().at(-1);
   return (
-    <Link href="/" className="block rounded-[20px] bg-accent-soft p-3.5 transition-colors hover:bg-[var(--accent-wash)]">
+    <Link href="/settings" className="block rounded-[20px] bg-accent-soft p-3.5 transition-colors hover:bg-[var(--accent-wash)]">
       <div className="eyebrow mb-2.5 !text-accent-strong">Banks</div>
       {institutions.length ? (
         <ul className="grid gap-1.5 text-[12.5px] text-ink2">

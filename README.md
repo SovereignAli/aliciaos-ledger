@@ -95,10 +95,10 @@ Tests are plain `node:test` on `.ts` files (Node 22.18+).
 
 Vercel, its own project on Alicia's account, Hobby plan. Set the same variables as
 `.env.local` in the project environment, run the migration against the production database
-from a laptop (`DATABASE_URL=... node db/migrate.ts`), and point her domain at it. Then replace
-the `ledger.example.com` placeholder in `proxy.ts` (`authorizedParties`) and in
-`app/_components/LoginScreen.tsx`, add the domain in Clerk, and switch the Google OAuth app to
-production credentials before the first production sign-in.
+from a laptop (`DATABASE_URL=... node db/migrate.ts`), and point her domain at it. The domain is
+`ledger.alistation.net` (Namecheap); it is listed in `proxy.ts` (`authorizedParties`) and shown on the
+login screen's host chip. Before the first production sign-in on it, create Clerk's production
+instance for that domain and switch the Google OAuth app to production credentials.
 
 ## Security posture
 
