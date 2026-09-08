@@ -37,7 +37,6 @@ export default async function OverviewPage() {
   const plaidReady = plaidConfigured();
   const byRole = new Map(roles.map((r) => [r.role, r.total]));
   const maxFlow = flow.reduce((m, f) => (f.income > m ? f.income : f.spending > m ? f.spending : m), 1n);
-  const heldPct = buckets.cash > 0n ? Number((buckets.held * 100n) / buckets.cash) : 0;
 
   return (
     <>
@@ -45,17 +44,18 @@ export default async function OverviewPage() {
       <div className="grid grid-cols-12 gap-[18px]">
 
         {/* Free to spend */}
-        <Window title="Available cash" className="col-span-12 lg:col-span-5" style={{ "--i": 0 } as React.CSSProperties}>
-          <div className="eyebrow mb-2.5 !text-accent-strong">After the buckets</div>
+        <Window title="Free to spend" className="col-span-12 lg:col-span-5" style={{ "--i": 0 } as React.CSSProperties}>
+          <div className="eyebrow mb-2.5 !text-accent-strong">In checking, after the cards</div>
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-            <div className="num font-display text-[52px] font-[750] leading-none tracking-[-0.02em] sm:text-[58px]">{formatCents(buckets.free).replace(/\.\d\d$/, "")}</div>
+            <div className={`num font-display text-[52px] font-[750] leading-none tracking-[-0.02em] sm:text-[58px] ${buckets.free < 0n ? "text-negative" : ""}`}>{formatCents(buckets.free).replace(/\.\d\d$/, "")}</div>
             <Trend delta={hasHistory ? buckets.free - freeThen : null} />
           </div>
           <p className="mt-3 text-[14px] leading-relaxed text-ink2">
-            {formatCents(buckets.cash)} in cash accounts. {formatCents(buckets.held)} held in buckets{heldPct ? ` (${heldPct}%)` : ""}.
+            {formatCents(buckets.checking)} in checking{buckets.owed > 0n ? `, ${formatCents(buckets.owed)} owed on the cards` : ""}.
+            {" "}{formatCents(buckets.savings)} in savings is parked: {formatCents(buckets.held)} in buckets and goals, {formatCents(buckets.unassigned)} with no job yet.
           </p>
           <div className="mt-4">
-            <BucketBar total={buckets.cash} segments={[...buckets.buckets.map((b) => ({ id: b.id, name: b.name, value: b.balance })), { id: "free", name: "Free", value: buckets.free }]} amounts={false} />
+            <BucketBar total={buckets.cash} segments={[...buckets.buckets.map((b) => ({ id: b.id, name: b.name, value: b.held })), { id: "unassigned", name: "Unassigned", value: buckets.unassigned }, { id: "spendable", name: "Free", value: buckets.free }]} amounts={false} />
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {budgeted > 0n ? (
@@ -70,21 +70,25 @@ export default async function OverviewPage() {
 
         {/* Buckets */}
         <Window title="Buckets" className="col-span-12 sm:col-span-6 lg:col-span-4" style={{ "--i": 1 } as React.CSSProperties} right={`${formatCents(buckets.held)} held.`} bodyClassName="flex h-[calc(100%-40px)] flex-col px-[22px] pb-[22px] pt-1">
-          <div className="text-[13px] leading-relaxed text-ink2">Every paycheck is split on arrival. The living share stays free; these two stay in savings until needed.</div>
+          <div className="text-[13px] leading-relaxed text-ink2">Every paycheck is split on arrival. The living share stays free; the rest stays in savings until needed.</div>
           <div className="mt-auto grid gap-3.5 pt-5">
             {buckets.buckets.map((b) => {
-              const pct = buckets.cash > 0n && b.balance > 0n ? Math.min(100, Number((b.balance * 100n) / buckets.cash)) : 0;
+              const goal = b.kind === "goal";
+              const denom = goal && b.target ? b.target : buckets.savings;
+              const pct = denom > 0n && b.held > 0n ? Math.min(100, Number((b.held * 100n) / denom)) : 0;
+              const ahead = b.balance < 0n ? -b.balance : 0n;
               return (
                 <div key={b.id} className="grid gap-1.5">
                   <div className="flex justify-between text-[13px]">
-                    <span className="flex items-center gap-2 font-semibold"><BucketIcon id={b.id} className="h-3.5 w-3.5 text-ink3" />{b.name} <span className="ml-1 font-normal text-ink3">{b.id === "buffer" ? buckets.policy.bufferPct : buckets.policy.investPct}%</span></span>
-                    <span className="mono num text-[12.5px]">{formatCents(b.balance)}</span>
+                    <span className="flex min-w-0 items-center gap-2 font-semibold"><BucketIcon id={b.id} className="h-3.5 w-3.5 shrink-0 text-ink3" /><span className="truncate">{b.name}</span> <span className="ml-1 shrink-0 font-normal text-ink3">{goal ? (b.target ? `of ${formatCents(b.target).replace(/\.\d\d$/, "")}` : "goal") : `${b.id === "buffer" ? buckets.policy.bufferPct : buckets.policy.investPct}%`}</span></span>
+                    <span className="mono num text-[12.5px]">{formatCents(b.held)}</span>
                   </div>
                   <div className="bar"><div style={{ width: `${pct}%` }} /></div>
+                  {ahead > 0n ? <div className="text-[11.5px] leading-snug text-ink3">Ahead by {formatCents(ahead)}: more has gone to the brokerage than the {buckets.policy.investPct}% set aside.</div> : null}
                 </div>
               );
             })}
-            <div className="text-[12px] leading-snug text-ink3">Living {buckets.policy.livingPct}% · <Link href="/cash" className="underline underline-offset-2">Cash</Link> has the ledger.</div>
+            <div className="text-[12px] leading-snug text-ink3">Living {buckets.policy.livingPct}% · <Link href="/cash" className="underline underline-offset-2">Cash</Link> has the ledger · <Link href="/budgets" className="underline underline-offset-2">Budgets</Link> has the goals.</div>
           </div>
         </Window>
 

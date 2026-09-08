@@ -6,29 +6,60 @@ import { shortAccountName } from "../names.ts";
 
 export type { BucketBalance };
 
+/**
+ * The cash picture, in the owner's terms rather than the banks':
+ *
+ *   cash        every cash-role balance (checking and savings together)
+ *   checking    the cash-role checking balances: what the cards and day-to-day pulls draw from
+ *   savings     the cash-role savings balances: where paychecks land and the buckets are held
+ *   owed        what is currently on the credit cards, already spent but not yet paid
+ *   held        what the open buckets and goals park in savings
+ *   unassigned  savings not claimed by any bucket: parked, but with no job yet
+ *   free        checking minus what the cards will take: money that can go without touching savings
+ */
 export interface BucketOverview {
   buckets: BucketBalance[];
-  held: Cents; // sum of bucket balances (only positive ones hold real cash)
-  cash: Cents; // latest balances of role=cash accounts
-  free: Cents; // cash − held
+  held: Cents;
+  cash: Cents;
+  checking: Cents;
+  savings: Cents;
+  owed: Cents;
+  unassigned: Cents;
+  free: Cents;
   policy: { effectiveFrom: string; bufferPct: number; investPct: number; livingPct: number };
 }
 
 export async function bucketOverview(today: string): Promise<BucketOverview> {
   const sql = getSql();
-  const [buckets, policy, cashRow] = await Promise.all([
+  const [buckets, policy, rows] = await Promise.all([
     bucketBalances(sql),
     policyFor(sql, today),
-    sql.query<{ cash: string }>(
-      `select coalesce(sum(b.current_cents), 0)::text as cash
+    sql.query<{ checking: string; savings: string; owed: string }>(
+      `select coalesce(sum(b.current_cents) filter (where a.role = 'cash' and a.subtype <> 'savings'), 0)::text as checking,
+              coalesce(sum(b.current_cents) filter (where a.role = 'cash' and a.subtype = 'savings'), 0)::text as savings,
+              coalesce(sum(b.current_cents) filter (where a.role = 'credit'), 0)::text as owed
          from account a
          left join lateral (select current_cents from balance_snapshot where account_id = a.id order by as_of desc, created_at desc limit 1) b on true
-        where a.is_active and a.role = 'cash'`,
+        where a.is_active and a.role in ('cash', 'credit')`,
     ),
   ]);
-  const held = buckets.reduce((s, b) => s + (b.balance > 0n ? b.balance : 0n), 0n);
-  const cash = centsFromDb(cashRow[0].cash);
-  return { buckets, held, cash, free: cash - held, policy: toPolicy(policy) };
+  const held = buckets.reduce((s, b) => s + b.held, 0n);
+  const checking = centsFromDb(rows[0].checking);
+  const savings = centsFromDb(rows[0].savings);
+  const owed = centsFromDb(rows[0].owed);
+  const unassigned = savings - held;
+  return { buckets, held, cash: checking + savings, checking, savings, owed, unassigned, free: checking - owed, policy: toPolicy(policy) };
+}
+
+/** What this month's paychecks put into goals, so the living figure can show what is really left. */
+export async function goalFundingThisMonth(month: string): Promise<Cents> {
+  const [row] = await getSql().query<{ total: string }>(
+    `select coalesce(sum(e.amount_cents), 0)::text as total
+       from bucket_entry e join bucket b on b.id = e.bucket_id
+      where b.kind = 'goal' and e.source = 'paycheck' and to_char(e.occurred_on, 'YYYY-MM') = $1`,
+    [month],
+  );
+  return centsFromDb(row.total);
 }
 
 function toPolicy(p: PolicyRow) {

@@ -19,29 +19,33 @@ export function BucketsPanel({ overview, paychecks, entries, history, today, acc
 
   return (
     <>
-      <Window title="Buckets" right={`${formatCents(free)} free of ${formatCents(cash)}.`} className="col-span-12 lg:col-span-8" style={i(0)} bodyClassName="px-[22px] pb-3 pt-1">
+      <Window title="Buckets and goals" right={`${formatCents(held)} parked of ${formatCents(cash)} cash.`} className="col-span-12 lg:col-span-8" style={i(0)} bodyClassName="px-[22px] pb-3 pt-1">
         <ul>
           {buckets.map((b) => {
             const pts = history[b.id] ?? [];
             const first = pts[0]?.on;
+            const goal = b.kind === "goal";
+            const ahead = b.balance < 0n ? -b.balance : 0n;
             return (
               <li key={b.id} className="grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-1 border-b border-line-soft py-3.5 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_170px_auto]">
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="cat-ico h-8 w-8 rounded-[10px] [&_svg]:h-4 [&_svg]:w-4"><BucketIcon id={b.id} /></span>
                   <div className="min-w-0">
-                  <div className="text-[14px] font-semibold">{b.name} <span className="ml-1 font-normal text-ink3">{pct(b.id)}%</span></div>
+                  <div className="truncate text-[14px] font-semibold">{b.name} <span className="ml-1 font-normal text-ink3">{goal ? (b.target ? `of ${formatCents(b.target).replace(/\.\d\d$/, "")}` : "goal") : `${pct(b.id)}%`}</span></div>
                   <div className="text-[12px] text-ink3">
-                    {formatCents(b.funded)} in{b.released > 0n ? `, ${formatCents(b.released)} out` : ""}{first ? ` · since ${fmtDate(DAY, first)}` : ""}
+                    {ahead > 0n
+                      ? `${formatCents(ahead)} ahead: more went to the brokerage than the split set aside`
+                      : `${formatCents(b.funded)} in${b.released > 0n ? `, ${formatCents(b.released)} out` : ""}${first ? ` · since ${fmtDate(DAY, first)}` : ""}`}
                   </div>
                   </div>
                 </div>
                 <div className="col-span-2 text-accent sm:col-span-1"><Sparkline points={pts} width={170} height={38} /></div>
-                <div className="num text-right font-display text-[20px] font-bold leading-none"><Money cents={b.balance} signed={false} className={b.balance < 0n ? "text-negative" : ""} /></div>
+                <div className="num text-right font-display text-[20px] font-bold leading-none"><Money cents={b.held} signed={false} /></div>
               </li>
             );
           })}
         </ul>
-        <p className="pt-3 text-[12px] leading-snug text-ink3">Held in savings, {formatCents(held)} across the two. Living {policy.livingPct}% is what stays free.</p>
+        <p className="pt-3 text-[12px] leading-snug text-ink3">All of it stays in savings. {formatCents(free)} is free to spend from checking after the cards; {formatCents(overview.unassigned)} in savings has no job yet. Living {policy.livingPct}% of each paycheck is what stays free.</p>
       </Window>
 
       <Window title="Paychecks · split" right={`${paychecks.length} this year.`} className="col-span-12 lg:col-span-7" bodyClassName="pb-0 pt-3" style={i(2)}>

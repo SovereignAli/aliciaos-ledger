@@ -160,10 +160,11 @@ export async function setSplitPolicy(bufferPct: string, investPct: string, effec
   return { ok: true };
 }
 
-/** Move money into or out of a bucket by hand: a buffer dip, a top-up. */
+/** Move money into or out of a bucket or goal by hand: a buffer dip, a top-up, the trip paid for. */
 export async function adjustBucket(bucketId: string, dollars: string, direction: "in" | "out", note: string, on: string): Promise<{ ok: boolean; message?: string }> {
   const userId = await requireUserId();
-  if (!["buffer", "investing"].includes(bucketId)) return { ok: false, message: "No such bucket." };
+  const [bucket] = await getSql().query<{ id: string }>(`select id from bucket where id = $1 and closed_at is null`, [bucketId]);
+  if (!bucket) return { ok: false, message: "No such bucket." };
   let cents: bigint;
   try {
     cents = parseDollarsToCents(dollars);
@@ -179,6 +180,67 @@ export async function adjustBucket(bucketId: string, dollars: string, direction:
     [bucketId, signed.toString(), on, note.trim() || null],
   );
   await writeAudit(sql, { actor: userId, action: "bucket_entry.manual", entity: "bucket_entry", entityId: row.id, after: { bucketId, amount_cents: signed, note }, ip: await requestIp() });
+  revalidateAll();
+  return { ok: true };
+}
+
+function parseGoalFields(targetDollars: string, dueOn: string, perPaycheckDollars: string): { ok: true; target: bigint | null; dueOn: string | null; perPaycheck: bigint } | { ok: false; message: string } {
+  let target: bigint | null = null;
+  let perPaycheck = 0n;
+  try {
+    if (targetDollars.trim() !== "") target = parseDollarsToCents(targetDollars);
+    if (perPaycheckDollars.trim() !== "") perPaycheck = parseDollarsToCents(perPaycheckDollars);
+  } catch {
+    return { ok: false, message: "Enter dollars and cents." };
+  }
+  if (target !== null && target <= 0n) return { ok: false, message: "The target must be more than zero." };
+  if (perPaycheck < 0n) return { ok: false, message: "The paycheck slice can't be negative." };
+  if (dueOn.trim() !== "" && !/^\d{4}-\d{2}-\d{2}$/.test(dueOn)) return { ok: false, message: "Bad date." };
+  return { ok: true, target, dueOn: dueOn.trim() || null, perPaycheck };
+}
+
+/** A goal: a bucket with a purpose. Optionally fed a fixed slice of every paycheck until it reaches its target. */
+export async function createGoal(name: string, targetDollars: string, dueOn: string, perPaycheckDollars: string): Promise<{ ok: boolean; message?: string }> {
+  const userId = await requireUserId();
+  const clean = name.trim().replace(/\s+/g, " ");
+  if (clean.length < 2 || clean.length > 60) return { ok: false, message: "Give it a name, 2 to 60 characters." };
+  const f = parseGoalFields(targetDollars, dueOn, perPaycheckDollars);
+  if (!f.ok) return f;
+  const sql = getSql();
+  const id = `goal_${crypto.randomUUID().replace(/-/g, "").slice(0, 12)}`;
+  const [{ sort }] = await sql.query<{ sort: number }>(`select coalesce(max(sort), 0) + 1 as sort from bucket`);
+  await sql.query(
+    `insert into bucket (id, name, sort, kind, target_cents, due_on, per_paycheck_cents) values ($1, $2, $3, 'goal', $4, $5, $6)`,
+    [id, clean, sort, f.target === null ? null : f.target.toString(), f.dueOn, f.perPaycheck.toString()],
+  );
+  await writeAudit(sql, { actor: userId, action: "goal.create", entity: "bucket", entityId: id, after: { name: clean, target_cents: f.target, due_on: f.dueOn, per_paycheck_cents: f.perPaycheck }, ip: await requestIp() });
+  revalidateAll();
+  return { ok: true };
+}
+
+export async function updateGoal(id: string, targetDollars: string, dueOn: string, perPaycheckDollars: string): Promise<{ ok: boolean; message?: string }> {
+  const userId = await requireUserId();
+  const f = parseGoalFields(targetDollars, dueOn, perPaycheckDollars);
+  if (!f.ok) return f;
+  const sql = getSql();
+  const [before] = await sql.query<{ target_cents: string | null; due_on: string | null; per_paycheck_cents: string }>(
+    `select target_cents::text, due_on::text, per_paycheck_cents::text from bucket where id = $1 and kind = 'goal' and closed_at is null`,
+    [id],
+  );
+  if (!before) return { ok: false, message: "No such goal." };
+  await sql.query(`update bucket set target_cents = $2, due_on = $3, per_paycheck_cents = $4 where id = $1`, [id, f.target === null ? null : f.target.toString(), f.dueOn, f.perPaycheck.toString()]);
+  await writeAudit(sql, { actor: userId, action: "goal.update", entity: "bucket", entityId: id, before, after: { target_cents: f.target, due_on: f.dueOn, per_paycheck_cents: f.perPaycheck }, ip: await requestIp() });
+  revalidateAll();
+  return { ok: true };
+}
+
+/** Close a goal. Its ledger stays; whatever it still held goes back to unassigned savings. */
+export async function closeGoal(id: string): Promise<{ ok: boolean; message?: string }> {
+  const userId = await requireUserId();
+  const sql = getSql();
+  const [row] = await sql.query<{ name: string }>(`update bucket set closed_at = now() where id = $1 and kind = 'goal' and closed_at is null returning name`, [id]);
+  if (!row) return { ok: false, message: "No such goal." };
+  await writeAudit(sql, { actor: userId, action: "goal.close", entity: "bucket", entityId: id, before: { name: row.name }, ip: await requestIp() });
   revalidateAll();
   return { ok: true };
 }

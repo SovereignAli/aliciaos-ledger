@@ -67,6 +67,25 @@ export async function syncBucketsForTxn(sql: Sql, txnId: string, actor: string):
         [bucket, cents.toString(), t.posted_at, t.id],
       );
     }
+    // Goals with a per-paycheck slice take it out of the living share, never past their target.
+    // A goal created after this paycheck is not back-filled: funding starts with the next one.
+    const goals = await sql.query<{ id: string; per_paycheck_cents: string; target_cents: string | null; balance: string }>(
+      `select b.id, b.per_paycheck_cents::text, b.target_cents::text,
+              coalesce((select sum(e.amount_cents) from bucket_entry e where e.bucket_id = b.id and e.txn_id is distinct from $1), 0)::text as balance
+         from bucket b where b.kind = 'goal' and b.closed_at is null and b.per_paycheck_cents > 0 and b.created_at <= now()`,
+      [t.id],
+    );
+    for (const g of goals) {
+      const room = g.target_cents === null ? centsFromDb(g.per_paycheck_cents) : centsFromDb(g.target_cents) - centsFromDb(g.balance);
+      const slice = centsFromDb(g.per_paycheck_cents) < room ? centsFromDb(g.per_paycheck_cents) : room;
+      if (slice <= 0n) continue;
+      await sql.query(
+        `insert into bucket_entry (bucket_id, amount_cents, occurred_on, source, txn_id)
+         values ($1, $2, $3, 'paycheck', $4)
+         on conflict (bucket_id, txn_id) where txn_id is not null do update set amount_cents = excluded.amount_cents, occurred_on = excluded.occurred_on, source = 'paycheck'`,
+        [g.id, slice.toString(), t.posted_at, t.id],
+      );
+    }
     if (pc.inserted) {
       await writeAudit(sql, { actor, action: "paycheck.split", entity: "paycheck", entityId: pc.id, after: { txn_id: t.id, ...s } });
     }
@@ -113,19 +132,33 @@ export async function resyncAllBuckets(sql: Sql, actor: string): Promise<{ paych
 export interface BucketBalance {
   id: string;
   name: string;
-  balance: Cents;
+  balance: Cents; // may be negative: more released than funded
+  held: Cents; // what the bucket really parks in savings: balance, floored at zero
   funded: Cents;
   released: Cents;
+  kind: "split" | "goal";
+  target: Cents | null;
+  dueOn: string | null;
+  perPaycheck: Cents;
 }
 
+/** Every open bucket: the two split buckets first, then goals in the order they were made. */
 export async function bucketBalances(sql: Sql): Promise<BucketBalance[]> {
-  const rows = await sql.query<{ id: string; name: string; balance: string; funded: string; released: string }>(
-    `select b.id, b.name,
+  const rows = await sql.query<{ id: string; name: string; balance: string; funded: string; released: string; kind: "split" | "goal"; target_cents: string | null; due_on: string | null; per_paycheck_cents: string }>(
+    `select b.id, b.name, b.kind, b.target_cents::text, b.due_on::text, b.per_paycheck_cents::text,
             coalesce(sum(e.amount_cents), 0)::text as balance,
             coalesce(sum(e.amount_cents) filter (where e.amount_cents > 0), 0)::text as funded,
             coalesce(-sum(e.amount_cents) filter (where e.amount_cents < 0), 0)::text as released
        from bucket b left join bucket_entry e on e.bucket_id = b.id
-      group by b.id, b.name, b.sort order by b.sort`,
+      where b.closed_at is null
+      group by b.id, b.name, b.sort, b.kind, b.target_cents, b.due_on, b.per_paycheck_cents, b.created_at
+      order by b.kind = 'goal', b.sort, b.created_at`,
   );
-  return rows.map((r) => ({ id: r.id, name: r.name, balance: centsFromDb(r.balance), funded: centsFromDb(r.funded), released: centsFromDb(r.released) }));
+  return rows.map((r) => {
+    const balance = centsFromDb(r.balance);
+    return {
+      id: r.id, name: r.name, balance, held: balance > 0n ? balance : 0n, funded: centsFromDb(r.funded), released: centsFromDb(r.released),
+      kind: r.kind, target: r.target_cents === null ? null : centsFromDb(r.target_cents), dueOn: r.due_on, perPaycheck: centsFromDb(r.per_paycheck_cents),
+    };
+  });
 }

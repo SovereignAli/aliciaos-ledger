@@ -50,6 +50,20 @@ legitimate.
 Cash tab shows the minimum to keep in savings (buffer plus investing not yet sent on), not a
 set of sub-accounts. Investing releases when a categorized contribution leaves the bank.
 
+**Free to spend is checking minus the cards.** Paychecks land in savings and get moved to
+checking as needed, so the honest "free" number is the checking balance less what is already
+on the credit cards. Everything in cash-role savings is parked: what the buckets and goals hold,
+and an "unassigned" remainder that has no job yet. `bucketOverview` returns all of these.
+A bucket whose releases exceed its funding (the investing bucket, when more goes to the
+brokerage than the split set aside) shows a held balance of zero and an "ahead by" note; the
+raw balance stays negative in the ledger so history is true.
+
+**Goals are buckets.** A goal ("Trip in March", "New laptop") is a `bucket` row with
+`kind = 'goal'`, an optional target and due date, and an optional fixed slice of every paycheck
+taken from the living share until the target is reached. It shares `bucket_entry`, so it is held
+in savings like the buffer, funded by hand from the Cash page, and released by hand when spent.
+Closing a goal hides it and returns what it held to unassigned savings; its ledger stays.
+
 **Manual entry is a provider, not a placeholder.** Everything that produces account data
 implements one `AccountProvider` interface — `listAccounts`, `fetchBalances`,
 `fetchTransactions`. Nothing below the adapter boundary knows which provider produced a row.

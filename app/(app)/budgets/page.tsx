@@ -1,7 +1,8 @@
 import { formatCents } from "@/lib/money";
 import { budgetLines, spendingByCategory } from "@/lib/queries/overview";
-import { listPaychecks } from "@/lib/queries/buckets";
+import { bucketOverview, goalFundingThisMonth, listPaychecks } from "@/lib/queries/buckets";
 import { BudgetRow } from "../../_components/BudgetRow";
+import { GoalsWindow } from "../../_components/GoalsWindow";
 import { fmtDate, MONTH_LONG, MONTH_SHORT } from "../../_components/Money";
 import { StatTile } from "../../_components/StatTile";
 import { Window } from "../../_components/Window";
@@ -15,12 +16,14 @@ export default async function BudgetsPage() {
   const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
   const dayOfMonth = Number(today.slice(8, 10));
   const dayFraction = dayOfMonth / daysInMonth;
-  const [lines, history, paychecks] = await Promise.all([budgetLines(month), spendingByCategory(6), listPaychecks(12)]);
+  const [lines, history, paychecks, overview, toGoals] = await Promise.all([budgetLines(month), spendingByCategory(6), listPaychecks(12), bucketOverview(today), goalFundingThisMonth(month)]);
+  const goals = overview.buckets.filter((b) => b.kind === "goal");
 
   const spent = lines.reduce((s, l) => s + l.spent, 0n);
   const budgeted = lines.reduce((s, l) => s + (l.target ?? 0n), 0n);
   const withTarget = lines.filter((l) => l.target !== null).length;
-  const living = paychecks.filter((p) => p.postedAt.startsWith(month)).reduce((s, p) => s + p.living, 0n);
+  // The living share, less whatever the goals took from this month's paychecks.
+  const living = paychecks.filter((p) => p.postedAt.startsWith(month)).reduce((s, p) => s + p.living, 0n) - toGoals;
   const left = budgeted - spent;
   const active = lines.filter((l) => l.spent > 0n || l.target !== null || l.avg3 > 0n);
   const quiet = lines.filter((l) => !active.includes(l));
@@ -37,8 +40,10 @@ export default async function BudgetsPage() {
         <div style={idx(0)}><StatTile label={`${fmtDate(MONTH_LONG, month).split(" ")[0]} spent`} value={formatCents(spent)} hint={`Day ${dayOfMonth} of ${daysInMonth}.`} /></div>
         <div style={idx(1)}><StatTile label="Budgeted" value={budgeted > 0n ? formatCents(budgeted) : "—"} hint={withTarget ? `${withTarget} categor${withTarget === 1 ? "y" : "ies"} with a target.` : "No targets yet."} /></div>
         <div style={idx(2)}><StatTile label="Left to spend" value={budgeted > 0n ? formatCents(left) : "—"} hint={budgeted > 0n ? (left < 0n ? "Over for the month." : `${formatCents(left / BigInt(Math.max(1, daysInMonth - dayOfMonth + 1)))} a day.`) : "Set targets below."} /></div>
-        <div style={idx(3)}><StatTile label="Living money" value={formatCents(living)} hint={living > 0n ? "This month's paychecks, after the split." : "No paycheck yet this month."} /></div>
+        <div style={idx(3)}><StatTile label="Living money" value={formatCents(living)} hint={living > 0n ? (toGoals > 0n ? `This month's paychecks, after the split and ${formatCents(toGoals)} to goals.` : "This month's paychecks, after the split.") : "No paycheck yet this month."} /></div>
       </div>
+
+      <GoalsWindow goals={goals} today={today} className="col-span-12" style={idx(6)} />
 
       <Window title={`Categories · ${fmtDate(MONTH_LONG, month)}`} right={budgeted > 0n ? `${formatCents(spent)} of ${formatCents(budgeted)}.` : "Targets apply from this month on."} className="col-span-12 lg:col-span-7" style={idx(4)} bodyClassName="px-[22px] pb-2 pt-1">
         {budgeted > 0n ? (

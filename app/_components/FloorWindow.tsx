@@ -6,7 +6,7 @@ import { TrendDownIcon, TrendUpIcon } from "./Icons";
 import { DAY, fmtDate, Money } from "./Money";
 import { Window } from "./Window";
 
-const LABEL: Record<string, string> = { buffer: "Buffer", investing: "Investing" };
+const SPLIT_LABEL: Record<string, string> = { buffer: "Buffer", investing: "Investing" };
 
 /**
  * The buckets are bookkeeping on one real savings balance. This window turns
@@ -22,10 +22,13 @@ export function FloorWindow({ overview, account, entries, yearGross, avgSpend, c
   const by = (id: string) => buckets.find((b) => b.id === id)?.balance ?? 0n;
   const pos = (v: Cents) => (v > 0n ? v : 0n);
   const months = avgSpend > 0n ? Number((pos(by("buffer")) * 10n) / avgSpend) / 10 : null;
+  const LABEL: Record<string, string> = { ...SPLIT_LABEL };
+  for (const b of buckets) LABEL[b.id] = b.name;
 
   const rows = [
     { id: "buffer", value: pos(by("buffer")), note: months !== null ? `${policy.bufferPct}% of the ${formatCents(yearGross)} split this year. About ${months.toFixed(1)} month${months === 1 ? "" : "s"} of spending.` : `${policy.bufferPct}% of gross, against a lean month.` },
-    { id: "investing", value: pos(by("investing")), note: "Split but not yet at the brokerage. Leaves the minimum once the transfer lands." },
+    { id: "investing", value: pos(by("investing")), note: by("investing") < 0n ? `Ahead by ${formatCents(-by("investing"))}: more has gone to the brokerage than the ${policy.investPct}% set aside.` : "Split but not yet at the brokerage. Leaves the minimum once the transfer lands." },
+    ...buckets.filter((b) => b.kind === "goal").map((b) => ({ id: b.id, value: b.held, note: b.target ? `${formatCents(b.held)} of ${formatCents(b.target)}${b.dueOn ? `, by ${fmtDate(DAY, b.dueOn)}` : ""}.` : "Open-ended goal." })),
   ];
   const segments = [
     ...rows.map((r) => ({ id: r.id, name: LABEL[r.id], value: r.value })),
